@@ -1,0 +1,517 @@
+{
+	"info": {
+		"_postman_id": "6f2151a4-cfef-4c0e-a56a-3f268bec7c1b",
+		"name": "SpringBoot - EndPoints Customer",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Passo 01 - Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var responseJSON;\r",
+							"try {\r",
+							"    responseJSON = JSON.parse(responseBody);\r",
+							"    token = postman.getResponseHeader(\"Authorization\"); \r",
+							"    pm.environment.set(\"token\", token);\r",
+							"    tests['Teste [ 001 - Autenticacao (Login) -> username: ' + responseJSON.username + ' ] - OK'] = responseCode.code === 200;\r",
+							"}\r",
+							"catch (e) { \r",
+							"    token = {}; \r",
+							"    tests['Teste [ 001 - Autenticacao (Login) ] - ERROR'] = false;\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"usuario\": \"admin\",\r\n    \"senha\": \"123456\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{uri}}/login",
+					"host": [
+						"{{uri}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Passo 02 - findCutomerById",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var responseJSON;\r",
+							"try {\r",
+							"    responseJSON = JSON.parse(responseBody); \r",
+							"    pm.environment.set(\"id\", responseJSON.id);\r",
+							"    pm.environment.set(\"usuario\", responseJSON.usuario);\r",
+							"    var cep = responseJSON.enderecos[0].cep\r",
+							"    cep = cep.replace('.','')\r",
+							"    cep = cep.replace('-','')\r",
+							"    pm.environment.set(\"cep\", cep);\r",
+							"    tests['Teste [ 002 - findCustomerById -> id: '+responseJSON.id+' | ' + 'usuario: '+responseJSON.usuario+' ] - OK' ] = responseCode.code === 200;\r",
+							"}\r",
+							"catch (e) { \r",
+							"    responseJSON = {}; \r",
+							"    tests['Teste [ 002 - findCustomerById ] - ERROR' ] = false;\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{uri}}/clientes/1",
+					"host": [
+						"{{uri}}"
+					],
+					"path": [
+						"clientes",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Passo 03 - findCustomerByUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var responseJSON;\r",
+							"try {\r",
+							"    responseJSON = JSON.parse(responseBody); \r",
+							"    pm.environment.set(\"usuario\", responseJSON.usuario);\r",
+							"    tests['Teste [ 003 - findCustomerByUser -> id: '+responseJSON.id+' | ' + 'usuario: '+responseJSON.usuario+' ] - OK' ] = responseCode.code === 200;\r",
+							"}\r",
+							"catch (e) { \r",
+							"    responseJSON = {}; \r",
+							"    tests['Teste [ 003 - findCustomerByUser ] - ERROR'] = false;\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{uri}}/clientes/usuario?usuario={{usuario}}",
+					"host": [
+						"{{uri}}"
+					],
+					"path": [
+						"clientes",
+						"usuario"
+					],
+					"query": [
+						{
+							"key": "usuario",
+							"value": "{{usuario}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Passo 04 - findByCEPOrigin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var responseJSON;\r",
+							"try {\r",
+							"    responseJSON = JSON.parse(responseBody); \r",
+							"    pm.environment.set(\"usuario\", responseJSON.usuario);\r",
+							"    tests['Teste [ 004 - find CEP Origin ViaCep -> IBGE: '+responseJSON.ibge+' ] - OK' ] = responseCode.code === 200;\r",
+							"}\r",
+							"catch (e) { \r",
+							"    responseJSON = {}; \r",
+							"    tests['Teste [ 004 - find CEP Origin ViaCep ] - ERROR'] = false;\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "viacep.com.br/ws/:cep/json/",
+					"host": [
+						"viacep",
+						"com",
+						"br"
+					],
+					"path": [
+						"ws",
+						":cep",
+						"json",
+						""
+					],
+					"variable": [
+						{
+							"key": "cep",
+							"value": "{{cep}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Passo 05 - findByCEP",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var responseJSON;\r",
+							"try {\r",
+							"    responseJSON = JSON.parse(responseBody); \r",
+							"    pm.environment.set(\"endereco\", responseJSON.endereco);\r",
+							"    tests['Teste [ 005 - findByCEP -> IBGE: ' + responseJSON.ibge + ' ] - OK' ] = responseCode.code === 200;\r",
+							"}\r",
+							"catch (e) { \r",
+							"    responseJSON = {}; \r",
+							"    tests['Teste [ 005 - findByCEP ] - ERROR' ] = false;\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{uri}}/viacep/:cep",
+					"host": [
+						"{{uri}}"
+					],
+					"path": [
+						"viacep",
+						":cep"
+					],
+					"variable": [
+						{
+							"key": "cep",
+							"value": "71060042"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Passo 06 - getCustomers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var responseJSON;\r",
+							"try {\r",
+							"    responseJSON = JSON.parse(responseBody); \r",
+							"    tests['Teste [ 006 - getCustomers ] - OK'] = responseCode.code === 200;\r",
+							"}\r",
+							"catch (e) { \r",
+							"    responseJSON = {}; \r",
+							"    tests['Teste [ 006 - getCustomers ] - ERROR'] = false;\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{uri}}/clientes",
+					"host": [
+						"{{uri}}"
+					],
+					"path": [
+						"clientes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Passo 07 - delCustomer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var responseJSON;\r",
+							"try {\r",
+							"    responseJSON = JSON.parse(responseBody); \r",
+							"    pm.environment.set(\"usuario\", responseJSON.usuario);\r",
+							"    tests['Teste [ 007 - delCustomer -> id: ' + responseJSON.id + ' | usuario: ' + responseJSON.usuario + '] - OK'] = responseCode.code === 200;\r",
+							"}\r",
+							"catch (e) { \r",
+							"    responseJSON = {}; \r",
+							"    tests['Teste [ 007 - delCustomer ] - ERROR'] = false;\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{uri}}/clientes/2",
+					"host": [
+						"{{uri}}"
+					],
+					"path": [
+						"clientes",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Passo 08 - newCustomer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var responseJSON;\r",
+							"try {\r",
+							"    responseJSON = JSON.parse(responseBody); \r",
+							"    pm.environment.set(\"endereco\", responseJSON.endereco);\r",
+							"    tests['Teste [ 008 - newCustomer ] - OK'] = responseCode.code === 200;\r",
+							"}\r",
+							"catch (e) { \r",
+							"    responseJSON = {}; \r",
+							"    tests['Teste [ 008 - newCustomer ] - ERROR'] = false;\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"usuario\":\"alex\",\r\n    \"nome\": \"Alexandre\",\r\n    \"cpf\": \"26282517109\",\r\n\t\"senha\": \"654321\",\t\r\n\t\"userOperacao\": 1,\r\n\t\"perfis\": [\"ROLE_CLIENTE\"],\r\n    \"enderecos\": [\r\n        {\r\n            \"id\": 1,\r\n            \"logradouro\": \"Quadra XXX\",\r\n            \"numero\": \"303\",\r\n            \"complemento\": \"Bloco B, Apto 503\",\r\n            \"bairro\": \"Sudoeste\",\r\n            \"cep\": \"70673302\",\r\n            \"dtOperacao\": \"15/06/2021@23:12:47\",\r\n            \"userOperacao\": {\r\n                \"id\": 1\r\n            },\r\n            \"cidade\": {\r\n                \"id\": 1,\r\n                \"nome\": \"Brasília\",\r\n                \"estado\": {\r\n                    \"codigoUf\": 53,\r\n                    \"descricao\": \"Distrito Federal\",\r\n                    \"sigla\": \"DF\"\r\n                }\r\n            }\r\n        },\r\n        {\r\n            \"id\": 2,\r\n            \"logradouro\": \"QE 26 conjunto I\",\r\n            \"numero\": \"26\",\r\n            \"complemento\": \"casa\",\r\n            \"bairro\": \"Guará II\",\r\n            \"cep\": \"71060072\",\r\n            \"dtOperacao\": \"15/06/2021@23:12:47\",\r\n            \"userOperacao\": null,\r\n            \"cidade\": {\r\n                \"id\": 1,\r\n                \"nome\": \"Brasília\",\r\n                \"estado\": {\r\n                    \"codigoUf\": 53,\r\n                    \"descricao\": \"Distrito Federal\",\r\n                    \"sigla\": \"DF\"\r\n                }\r\n            }\r\n        }\r\n    ],\r\n    \"telefones\": [\r\n        {\r\n            \"id\": 1,\r\n            \"codigoPais\": \"+55\",\r\n            \"ddd\": \"61\",\r\n            \"numero\": \"999998888\",\r\n            \"ramal\": \"\",\r\n            \"contato\": true,\r\n            \"dtOperacao\": \"15/06/2021@23:12:47\",\r\n            \"userOperacao\": {\r\n                \"id\": 1\r\n            }\r\n        },\r\n        {\r\n            \"id\": 2,\r\n            \"codigoPais\": \"+55\",\r\n            \"ddd\": \"11\",\r\n            \"numero\": \"39995333 \",\r\n            \"ramal\": \"145\",\r\n            \"contato\": false,\r\n            \"dtOperacao\": \"15/06/2021@23:12:47\",\r\n            \"userOperacao\": {\r\n                \"id\": 1\r\n            }\r\n        },\r\n        {\r\n            \"id\": 3,\r\n            \"codigoPais\": \"+55\",\r\n            \"ddd\": \"61\",\r\n            \"numero\": \"33819995 \",\r\n            \"ramal\": \"\",\r\n            \"contato\": false,\r\n            \"dtOperacao\": \"15/06/2021@23:12:47\",\r\n            \"userOperacao\": {\r\n                \"id\": 1\r\n            }\r\n        }\r\n    ],\r\n    \"emails\": [\r\n        {\r\n            \"email\": \"alex@gmail.com\",\r\n            \"contato\": true,\r\n            \"dtOperacao\": \"15/06/2021@23:12:47\",\r\n            \"userOperacao\": {\r\n                \"id\": 1\r\n            },\r\n            \"ativado\": true\r\n        },\r\n        {\r\n            \"email\": \"alex@hotmail.com\",\r\n            \"contato\": false,\r\n            \"dtOperacao\": \"15/06/2021@23:12:47\",\r\n            \"userOperacao\": {\r\n                \"id\": 1\r\n            }\r\n        }\r\n    ]\r\n}    "
+				},
+				"url": {
+					"raw": "{{uri}}/clientes/",
+					"host": [
+						"{{uri}}"
+					],
+					"path": [
+						"clientes",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Passo 09 - editCustomer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var responseJSON;\r",
+							"try {\r",
+							"    responseJSON = JSON.parse(responseBody); \r",
+							"    pm.environment.set(\"endereco\", responseJSON.endereco);\r",
+							"    tests['Teste [ 009 - editCustomer ] - OK'] = responseCode.code === 200;\r",
+							"}\r",
+							"catch (e) { \r",
+							"    responseJSON = {}; \r",
+							"    tests['Teste [ 009 - editCustomer ] - ERROR'] = false;\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"usuario\":\"alex\",\r\n    \"nome\": \"Alexandre\",\r\n    \"cpf\": \"26282517109\",\r\n\t\"senha\": \"654321\",\t\r\n\t\"userOperacao\": 1,\r\n\t\"perfis\": [\"ROLE_CLIENTE\"],\r\n    \"enderecos\": [\r\n        {\r\n            \"id\": 1,\r\n            \"logradouro\": \"Quadra XXX\",\r\n            \"numero\": \"303\",\r\n            \"complemento\": \"Bloco B, Apto 503\",\r\n            \"bairro\": \"Sudoeste\",\r\n            \"cep\": \"70673302\",\r\n            \"dtOperacao\": \"15/06/2021@23:12:47\",\r\n            \"userOperacao\": {\r\n                \"id\": 1\r\n            },\r\n            \"cidade\": {\r\n                \"id\": 1,\r\n                \"nome\": \"Brasília\",\r\n                \"estado\": {\r\n                    \"codigoUf\": 53,\r\n                    \"descricao\": \"Distrito Federal\",\r\n                    \"sigla\": \"DF\"\r\n                }\r\n            }\r\n        },\r\n        {\r\n            \"id\": 2,\r\n            \"logradouro\": \"QE 26 conjunto I\",\r\n            \"numero\": \"26\",\r\n            \"complemento\": \"casa\",\r\n            \"bairro\": \"Guará II\",\r\n            \"cep\": \"71060072\",\r\n            \"dtOperacao\": \"15/06/2021@23:12:47\",\r\n            \"userOperacao\": null,\r\n            \"cidade\": {\r\n                \"id\": 1,\r\n                \"nome\": \"Brasília\",\r\n                \"estado\": {\r\n                    \"codigoUf\": 53,\r\n                    \"descricao\": \"Distrito Federal\",\r\n                    \"sigla\": \"DF\"\r\n                }\r\n            }\r\n        }\r\n    ],\r\n    \"telefones\": [\r\n        {\r\n            \"id\": 1,\r\n            \"codigoPais\": \"+55\",\r\n            \"ddd\": \"61\",\r\n            \"numero\": \"999998888\",\r\n            \"ramal\": \"\",\r\n            \"contato\": true,\r\n            \"dtOperacao\": \"15/06/2021@23:12:47\",\r\n            \"userOperacao\": {\r\n                \"id\": 1\r\n            }\r\n        },\r\n        {\r\n            \"id\": 2,\r\n            \"codigoPais\": \"+55\",\r\n            \"ddd\": \"11\",\r\n            \"numero\": \"39995333 \",\r\n            \"ramal\": \"145\",\r\n            \"contato\": false,\r\n            \"dtOperacao\": \"15/06/2021@23:12:47\",\r\n            \"userOperacao\": {\r\n                \"id\": 1\r\n            }\r\n        },\r\n        {\r\n            \"id\": 3,\r\n            \"codigoPais\": \"+55\",\r\n            \"ddd\": \"61\",\r\n            \"numero\": \"33819995 \",\r\n            \"ramal\": \"\",\r\n            \"contato\": false,\r\n            \"dtOperacao\": \"15/06/2021@23:12:47\",\r\n            \"userOperacao\": {\r\n                \"id\": 1\r\n            }\r\n        }\r\n    ],\r\n    \"emails\": [\r\n        {\r\n            \"email\": \"alex@gmail.com\",\r\n            \"contato\": true,\r\n            \"dtOperacao\": \"15/06/2021@23:12:47\",\r\n            \"userOperacao\": {\r\n                \"id\": 1\r\n            },\r\n            \"ativado\": true\r\n        },\r\n        {\r\n            \"email\": \"alex@hotmail.com\",\r\n            \"contato\": false,\r\n            \"dtOperacao\": \"15/06/2021@23:12:47\",\r\n            \"userOperacao\": {\r\n                \"id\": 1\r\n            }\r\n        }\r\n    ]\r\n}    "
+				},
+				"url": {
+					"raw": "{{uri}}/clientes/",
+					"host": [
+						"{{uri}}"
+					],
+					"path": [
+						"clientes",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
