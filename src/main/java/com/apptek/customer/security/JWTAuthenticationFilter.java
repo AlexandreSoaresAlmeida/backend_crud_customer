@@ -42,7 +42,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 					new ArrayList<>());
 
 			Authentication auth = authenticationManager.authenticate(authToken);
-
+			
 			return auth;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -57,6 +57,29 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		String token = jwtUtil.generateToken(username);
 		res.addHeader("Authorization", "Bearer " + token);
 		res.addHeader("access-control-expose-headers", "Authorization");
+		
+		/*
+		String responseToClient = token;
+
+		res.setStatus(HttpServletResponse.SC_OK);
+		res.getWriter().write(responseToClient);
+		res.getWriter().flush();
+		*/
+		
+		res.setStatus(200);
+		res.setContentType("application/json");
+		res.getWriter().append(json(token, auth, username));
+		
+		res.getWriter().flush();
+	}
+	
+	private String json(String token, Authentication auth, String username) {
+		long date = new Date().getTime();
+		return "{\"timestamp\": " + date + ", " + "\"status\": 200, " + "\"error\": \"\", "
+		+ "\"message\": \"Usuario autenticado\", " + "\"token\": \""+token+"\", "
+		+ "\"username\": \"" + username + "\", "
+		+ "\"roles\": \"" + auth.getAuthorities().toString() + "\", "
+		+ "\"path\": \"/login\"}";
 	}
 
 	private class JWTAuthenticationFailureHandler implements AuthenticationFailureHandler {
@@ -64,15 +87,22 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		@Override
 		public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 				AuthenticationException exception) throws IOException, ServletException {
+			
+			String username = "";  
 			response.setStatus(401);
 			response.setContentType("application/json");
-			response.getWriter().append(json());
+			response.getWriter().append(json(username));
+			
+			response.getWriter().flush();
 		}
 
-		private String json() {
+		private String json(String username) {
 			long date = new Date().getTime();
-			return "{\"timestamp\": " + date + ", " + "\"status\": 401, " + "\"error\": \"Não autorizado\", "
-					+ "\"message\": \"Usuário ou senha inválidos\", " + "\"path\": \"/login\"}";
+			return "{\"timestamp\": " + date + ", " + "\"status\": 401, " + "\"error\": \"Nao autorizado\", "
+					+ "\"message\": \"Usuario ou senha invalidos\", " + "\"token\": \"\", "
+					+ "\"username\": \"" + username + "\", "
+			        + "\"roles\": \"\", " 
+					+ "\"path\": \"/login\"}";
 		}
 	}
 

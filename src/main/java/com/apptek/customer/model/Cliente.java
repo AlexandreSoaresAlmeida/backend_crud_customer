@@ -1,7 +1,6 @@
 package com.apptek.customer.model;
 
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -21,8 +20,10 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.Version;
 
 import com.apptek.customer.domains.enums.Perfil;
+import com.apptek.customer.dto.ClienteDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -49,6 +50,9 @@ public class Cliente extends Modelo implements Serializable {
 	private Date dtOperacao;
 	
 	private Cliente userOperacao;
+	
+	// Lock Otimista - Fonte: https://www.youtube.com/watch?v=82aeD5pHWDo
+	private Integer versao;
 
 	@OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
 	private List<Endereco> enderecos = new ArrayList<>();
@@ -67,7 +71,8 @@ public class Cliente extends Modelo implements Serializable {
 		addPerfil(Perfil.COMUM);
 	}
 
-	public Cliente(String usuario, String nome, String cpf, String senha, Cliente userOperacao) {
+	public Cliente(String usuario, String nome, String cpf, String senha, Cliente userOperacao, 
+			ArrayList<Endereco> enderecos, ArrayList<Telefone> telefones, ArrayList<Email> emails) {
 		super();
 		this.usuario = usuario;
 		this.nome = nome;
@@ -75,10 +80,13 @@ public class Cliente extends Modelo implements Serializable {
 		this.senha = senha;
 		this.dtOperacao = new Date();
 		this.userOperacao = userOperacao;
+		this.enderecos = enderecos;
+		this.telefones = telefones;
+		this.emails = emails;
 		addPerfil(Perfil.COMUM);
 	}
 
-	public Cliente(Long id, String usuario, String nome, String cpf, String senha, Cliente userOperacao) {
+	public Cliente(Long id, String usuario, String nome, String cpf, String senha, ClienteDTO userOperacao) {
 		super();
 		this.id = id;
 		this.usuario = usuario;
@@ -86,10 +94,21 @@ public class Cliente extends Modelo implements Serializable {
 		this.cpf = cpf;
 		this.senha = senha;
 		this.dtOperacao = new Date();
-		this.userOperacao = userOperacao;
+		// this.userOperacao = userOperacao;
 		addPerfil(Perfil.COMUM);
 	}
 	
+	public Cliente(String usuario, String nome, String cpf, String senha, Cliente userOperacao) {
+		super();
+		this.usuario = usuario;
+		this.nome = nome;
+		this.cpf = cpf;
+		this.senha = senha;
+		this.dtOperacao = new Date();
+		// this.userOperacao = userOperacao;
+		addPerfil(Perfil.COMUM);
+	}
+
 	// Remove formatação do CPF
 	@PrePersist
 	@PreUpdate
@@ -97,6 +116,15 @@ public class Cliente extends Modelo implements Serializable {
 		this.setCpf(this.cpf.replaceAll("[^0-9]", ""));
 	}
 	
+	@Version
+	public Integer getVersao() {
+		return versao;
+	}
+
+	public void setVersao(Integer versao) {
+		this.versao = versao;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -113,10 +141,10 @@ public class Cliente extends Modelo implements Serializable {
 		this.nome = nome;
 	}
 
-	public String getCpf() throws ParseException {		
-		if (cpf.length() > 0) {
-			cpf = formatarString(cpf, "###.###.###-##"); 
-		}
+	public String getCpf() { //throws ParseException {		
+//		if (cpf.length() > 0) {
+//			cpf = formatarString(cpf, "###.###.###-##"); 
+//		}
 		return cpf;	
 	}
 	

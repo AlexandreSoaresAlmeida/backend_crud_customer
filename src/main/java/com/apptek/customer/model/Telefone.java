@@ -1,7 +1,6 @@
 package com.apptek.customer.model;
 
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -102,10 +101,10 @@ public class Telefone extends Modelo implements Serializable {
 		this.ddd = ddd;
 	}
 
-	public String getNumero() throws ParseException {
-		if (numero.length() > 0) {
-			numero = formatarString(numero, "#####-####");
-		}		
+	public String getNumero() { // throws ParseException {
+//		if (numero.length() > 0) {
+//			numero = formatarString(numero, "#####-####");
+//		}		
 		return numero;
 	}
 

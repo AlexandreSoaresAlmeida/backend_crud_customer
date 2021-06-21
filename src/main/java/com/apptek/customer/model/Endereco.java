@@ -12,11 +12,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.transaction.Transactional;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
+@Transactional
 public class Endereco extends Modelo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -109,10 +111,10 @@ public class Endereco extends Modelo implements Serializable {
 		this.bairro = bairro;
 	}
 
-	public String getCep() throws ParseException {
-		if (cep.length() > 0) {
-			cep = formatarString(cep, "##.###-###");
-		}
+	public String getCep() { //throws ParseException {
+//		if (cep.length() > 0) {
+//			cep = formatarString(cep, "##.###-###");
+//		}
 		return cep;
 	}
 
@@ -185,12 +187,7 @@ public class Endereco extends Modelo implements Serializable {
 				? getCidade().getEstado().getSigla()
 				: "";
 		builder.append("\n\n      | Logradouro: " + getLogradouro() + ", " + getComplemento() + " " + getNumero());
-		try {
-			builder.append("\n        | Bairro....: " + getBairro() + " CEP: " + getCep());
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		builder.append("\n        | Bairro....: " + getBairro() + " CEP: " + getCep());
 		builder.append("\n        | Cidade....: " + cidade + " - " + estado + "\n");
 		return builder.toString();
 	}

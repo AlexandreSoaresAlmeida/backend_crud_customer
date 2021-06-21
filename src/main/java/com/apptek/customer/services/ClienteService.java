@@ -1,8 +1,11 @@
 package com.apptek.customer.services;
 
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +20,7 @@ import com.apptek.customer.domains.enums.Perfil;
 import com.apptek.customer.dto.ClienteDTO;
 import com.apptek.customer.dto.ClienteNewDTO;
 import com.apptek.customer.model.Cliente;
+import com.apptek.customer.model.Endereco;
 import com.apptek.customer.repository.ClienteRepository;
 import com.apptek.customer.repository.EnderecoRepository;
 import com.apptek.customer.resources.exception.ObjectNotFoundException;
@@ -109,11 +113,30 @@ public class ClienteService {
 				objDto.getUsuarioOperacao());
 	}
 
-	public Cliente fromDTO(ClienteNewDTO objDto) {
+	@Transactional
+	public Cliente fromDTO(ClienteNewDTO objDto) throws ParseException {
 		// Cliente(Integer id, String usuario, String nome, String cpf, String senha, Cliente userOperacao)
-		Cliente cli = new Cliente(null, objDto.getUsuario(), objDto.getNome(),
-				      objDto.getCpf(), pe.encode(objDto.getSenha()), objDto.getUsuarioOperacao());
-
+		Cliente cli = new Cliente(
+							objDto.getUsuario(), 
+							objDto.getNome(),
+							objDto.getCpf(), 
+							pe.encode(objDto.getSenha()),
+							objDto.getUsuarioOperacao());
+		
+		for (Endereco e : objDto.getEnderecos()) {
+			Endereco end = new Endereco(
+								e.getLogradouro(), 
+								e.getNumero(), 
+								e.getComplemento(), 
+								e.getBairro(), 
+								e.getCep(), 
+								e.getCliente(),
+								e.getCidade(), 
+								e.getUserOperacao());
+			cli.getEnderecos().addAll(Arrays.asList(end));
+		}
+		cli.setTelefones(objDto.getTelefones());		
+		cli.setEmails(objDto.getEmails());
 		return cli;
 	}
 

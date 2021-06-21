@@ -45,9 +45,11 @@ public class DBService {
 	public void instantiateTestAppTekCrmDatabase() throws ParseException {
 
 		// Cadastro de Clientes
-		Cliente cliente = new Cliente("edu", "Eduardo", "752.145.855-94", pe.encode("123456"), null);
-		cliente.addPerfil(Perfil.COMUM);
-		cliente.addPerfil(Perfil.ADMIN);
+		Cliente cliente1 = new Cliente("admin", "Fulano de Tal", "752.145.855-94", pe.encode("123456"), null);
+		cliente1.addPerfil(Perfil.ADMIN);
+		
+		Cliente cliente2 = new Cliente("comum", "Siclano de Tal", "786.475.678-62", pe.encode("123456"), null);
+		cliente2.addPerfil(Perfil.COMUM);
 		
 		// Cadastro de tipos de telefones
 		TipoTelefone tipoTel1 = new TipoTelefone("Residencial", 8, true);
@@ -124,23 +126,23 @@ public class DBService {
 		cidadeRepository.save(cid3);
 		
 		// Cadastro de endereços
-		Endereco enderecoCliente = new Endereco("Quadra SQSW", "303", "Bloco B, Apto 503", "Sudoeste", "70.673-302", cliente, cid1, null);
-		Endereco enderecoCobranca = new Endereco("QE 28 conjunto D", "26", "casa", "Guará II", "71.060-042", cliente, cid1, null);
+		Endereco enderecoCliente = new Endereco("Quadra SQSW", "303", "Bloco B, Apto 503", "Sudoeste", "70.673-302", cliente1, cid1, null);
+		Endereco enderecoCobranca = new Endereco("QE 28 conjunto D", "26", "casa", "Guará II", "71.060-042", cliente1, cid1, null);
 
-		cliente.getEnderecos().addAll(Arrays.asList(enderecoCliente, enderecoCobranca));
+		cliente1.getEnderecos().addAll(Arrays.asList(enderecoCliente, enderecoCobranca));
 		
 		// Cadastro de telefones
-		Telefone tel1 = new Telefone("+55","61","9 9999-9999","",tipoTel3, cliente, true, null);     // celular
-		Telefone tel2 = new Telefone("+55","11","3999-5999","145",tipoTel2, cliente, false, null); // comercial
-		Telefone tel3 = new Telefone("+55","61","3381-9995","",tipoTel1, cliente, false, null);    // residencial
-		cliente.getTelefones().addAll(Arrays.asList(tel1, tel2, tel3));
+		Telefone tel1 = new Telefone("+55","61","9 9999-9999","",tipoTel3, cliente1, true, null);     // celular
+		Telefone tel2 = new Telefone("+55","11","3999-5999","145",tipoTel2, cliente1, false, null); // comercial
+		Telefone tel3 = new Telefone("+55","61","3381-9995","",tipoTel1, cliente1, false, null);    // residencial
+		cliente1.getTelefones().addAll(Arrays.asList(tel1, tel2, tel3));
 
 		// Email
 		// String email, Boolean contato, Cliente cliente, Boolean ativado, Cliente userOperacao
-		Email email1 = new Email("eduardo@gmail.com", true, cliente, true, null);
-		Email email2 = new Email("eduardo@hotmail.com", false, cliente, true, null);
-		cliente.getEmails().addAll(Arrays.asList(email1, email2));		
+		Email email1 = new Email("eduardo@gmail.com", true, cliente1, true, null);
+		Email email2 = new Email("eduardo@hotmail.com", false, cliente1, true, null);
+		cliente1.getEmails().addAll(Arrays.asList(email1, email2));		
 		
-		clienteRepository.saveAll(Arrays.asList(cliente));
+		clienteRepository.saveAll(Arrays.asList(cliente1, cliente2));
 	}	
 }

@@ -5,7 +5,6 @@ import java.io.Serializable;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
-import com.apptek.customer.model.Cliente;
 import com.apptek.customer.services.validation.ClienteUpdate;
 
 @ClienteUpdate
@@ -16,13 +15,13 @@ public class EmailDTO implements Serializable {
 	@Email
 	private String email;
 
-	private Cliente usuarioOperacao;
+	// private Cliente usuarioOperacao;
 	
 	public EmailDTO() {
 	}
 
-	public EmailDTO(String email) {
-		this.email = email;
+	public EmailDTO(com.apptek.customer.model.Email email) {
+		this.email = email.getEmail();
 	}
 
 	public static long getSerialversionuid() {

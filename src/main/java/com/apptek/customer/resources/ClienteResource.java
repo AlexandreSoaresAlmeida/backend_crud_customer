@@ -2,6 +2,7 @@ package com.apptek.customer.resources;
 
 import java.net.URI;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -65,7 +67,7 @@ public class ClienteResource {
 	@PreAuthorize("hasAnyRole('ADMIN')")
 	@Transactional
 	@RequestMapping(method=RequestMethod.POST)
-	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO objDto){
+	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO objDto) throws ParseException{
 		Cliente obj = service.fromDTO(objDto);
 		obj = service.insert(obj);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -84,8 +86,11 @@ public class ClienteResource {
 	
 	@PreAuthorize("hasAnyRole('ADMIN')")
 	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)
-	public ResponseEntity<Void> delete(@PathVariable Integer id) {
+	public ResponseEntity<Cliente> delete(@PathVariable Integer id) {
+		Cliente obj = service.find(id.longValue());
 		service.delete(id.longValue());
-		return ResponseEntity.noContent().build();
-	}	
+		return ResponseEntity.ok().body(obj);	
+		//	return ResponseEntity.noContent().build();
+	}
+
 }

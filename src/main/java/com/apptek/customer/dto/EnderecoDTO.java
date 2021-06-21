@@ -8,6 +8,7 @@ import javax.validation.constraints.NotEmpty;
 
 import com.apptek.customer.model.Cidade;
 import com.apptek.customer.model.Cliente;
+import com.apptek.customer.model.Endereco;
 import com.apptek.customer.services.validation.ClienteUpdate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -31,22 +32,79 @@ public class EnderecoDTO implements Serializable {
 	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name="Cliente_id")
-	private Cliente cliente;
+	private ClienteDTO cliente;
 	
 	@ManyToOne
-	@JoinColumn(name="aCidade_id")
-	private Cidade cidade;
+	@JoinColumn(name="Cidade_id")
+	private CidadeDTO cidade;
 	
 	
 	public EnderecoDTO() {
 	}
 
-	public EnderecoDTO(String logradouro, String numero, String complemento, String bairro, String cep) {
+	public EnderecoDTO(Endereco endereco) {
+		this.logradouro = endereco.getLogradouro();
+		this.numero = endereco.getNumero();
+		this.complemento= endereco.getComplemento();
+		this.bairro = endereco.getBairro();
+		this.cep = endereco.getCep();		
+		this.cidade = new CidadeDTO(endereco.getCidade());		
+	}
+	
+	public String getLogradouro() {
+		return logradouro;
+	}
+
+	public void setLogradouro(String logradouro) {
 		this.logradouro = logradouro;
+	}
+
+	public String getNumero() {
+		return numero;
+	}
+
+	public void setNumero(String numero) {
 		this.numero = numero;
-		this.complemento= complemento;
+	}
+
+	public String getComplemento() {
+		return complemento;
+	}
+
+	public void setComplemento(String complemento) {
+		this.complemento = complemento;
+	}
+
+	public String getBairro() {
+		return bairro;
+	}
+
+	public void setBairro(String bairro) {
 		this.bairro = bairro;
+	}
+
+	public String getCep() {
+		return cep;
+	}
+
+	public void setCep(String cep) {
 		this.cep = cep;
+	}
+
+	public ClienteDTO getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(ClienteDTO cliente) {
+		this.cliente = cliente;
+	}
+
+	public CidadeDTO getCidade() {
+		return cidade;
+	}
+
+	public void setCidade(CidadeDTO cidade) {
+		this.cidade = cidade;
 	}
 
 	public static long getSerialversionuid() {
