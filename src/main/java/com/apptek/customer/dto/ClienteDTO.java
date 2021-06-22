@@ -80,7 +80,7 @@ public class ClienteDTO implements Serializable {
 			*/
 			this.enderecos = cliente.getEnderecos().stream().map(x -> new EnderecoDTO(x)).collect(Collectors.toList());
 			this.telefones = cliente.getTelefones().stream().map(x -> new TelefoneDTO(x)).collect(Collectors.toList());
-			this.emails = cliente.getEmails().stream().map(x -> new EmailDTO(x)).collect(Collectors.toList());
+			this.emails    = cliente.getEmails().stream().map(x -> new EmailDTO(x)).collect(Collectors.toList());
 			this.dtOperacao = cliente.getDtOperacao();
 		}
 	}

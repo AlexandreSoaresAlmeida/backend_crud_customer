@@ -38,6 +38,13 @@ public class ClienteResource {
 		return ResponseEntity.ok().body(obj);
 	}
 	
+	@RequestMapping(method=RequestMethod.GET)
+	public ResponseEntity<List<ClienteDTO>> findAll() {
+		List<Cliente> list = service.findAll();
+		List<ClienteDTO> listDto = list.stream().map(obj-> new ClienteDTO(obj)).collect(Collectors.toList());
+		return ResponseEntity.ok().body(listDto);
+	}
+	
 	@Transactional
 	@RequestMapping(method=RequestMethod.POST)
 	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO objDto) throws ParseException{
@@ -61,14 +68,6 @@ public class ClienteResource {
 	public ResponseEntity<Void> delete(@PathVariable Long id) {
 		service.delete(id);
 		return ResponseEntity.noContent().build();
-	}
-	
-	@PreAuthorize("hasAnyRole('ADMIN')")
-	@RequestMapping(method=RequestMethod.GET)
-	public ResponseEntity<List<ClienteDTO>> findAll() {
-		List<Cliente> list = service.findAll();
-		List<ClienteDTO> listDto = list.stream().map(obj-> new ClienteDTO(obj)).collect(Collectors.toList());
-		return ResponseEntity.ok().body(listDto);
 	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN')")

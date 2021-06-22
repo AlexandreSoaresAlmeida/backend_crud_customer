@@ -23,6 +23,14 @@ public class EmailDTO implements Serializable {
 	public EmailDTO(com.apptek.customer.model.Email email) {
 		this.email = email.getEmail();
 	}
+	
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
