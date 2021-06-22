@@ -72,8 +72,8 @@ public class ClienteDTO implements Serializable {
 			this.id = cliente.getId();
 			this.cpf = cliente.getCpf();
 			this.nome = cliente.getNome();
-			/*
 			this.usuario = cliente.getUsuario();
+			/*
 			this.usuarioOperacao = new ClienteDTO();
 			this.usuarioOperacao.setCpf(cliente.getCpf());
 			this.usuarioOperacao.setNome(cliente.getNome());
