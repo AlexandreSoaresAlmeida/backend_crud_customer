@@ -52,6 +52,7 @@ public class Cliente extends Modelo implements Serializable {
 	private Cliente userOperacao;
 	
 	// Lock Otimista - Fonte: https://www.youtube.com/watch?v=82aeD5pHWDo
+	@JsonIgnore
 	private Integer versao;
 
 	@OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)

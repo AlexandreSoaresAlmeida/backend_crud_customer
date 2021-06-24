@@ -29,6 +29,7 @@ public class Email implements Serializable {
 	
 	private Boolean ativado;
 
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "Cliente_id")
 	private Cliente cliente;	

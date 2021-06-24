@@ -37,6 +37,7 @@ public class Endereco extends Modelo implements Serializable {
 	
 	private Cliente userOperacao;
 
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "Cliente_id")
 	private Cliente cliente;
